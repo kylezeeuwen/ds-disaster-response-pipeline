@@ -35,13 +35,12 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     engine = create_engine(f"sqlite:///{database_filename}")
-
     df.to_sql('training_messages', engine, index=False, if_exists='replace')
 
 def test_data(database_filename):
     engine = create_engine(f"sqlite:///{database_filename}")
-
-    print(engine.execute("SELECT * FROM training_messages").fetchall())
+    record_count = engine.execute("SELECT count(*) AS c FROM training_messages").fetchall()[0][0]
+    print(f"record count: {record_count}")
 
 def main():
     if len(sys.argv) == 4:

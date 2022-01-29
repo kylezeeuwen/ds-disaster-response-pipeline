@@ -40,8 +40,8 @@ docker run --rm -p 8888:8888 --name ds-drp -e JUPYTER_ENABLE_LAB=yes -v $(pwd)/n
 ### Prerequisite: Activate python env
 
     cd /Users/kyle/projects/udacity-data-science/ds-disaster-response-pipeline;
-    python3 -m venv ds-disaster-response-pipeline;
-    source ./ds-disaster-response-pipeline/bin/activate;
+    python3 -m venv venv;
+    source ./venv/bin/activate;
     pip3 install -r requirements.txt;
 
 
