@@ -35,7 +35,15 @@ This is the content of the bin/go file circa Nov 20, 2021:
 docker run --rm -p 8888:8888 --name ds-drp -e JUPYTER_ENABLE_LAB=yes -v $(pwd)/notebook:/home/jovyan/work jupyter/datascience-notebook:latest
 ```
 
-## Run pythong scripts
+## Run python scripts
+
+### Prerequisite: Activate python env
+
+    cd /Users/kyle/projects/udacity-data-science/ds-disaster-response-pipeline;
+    python3 -m venv ds-disaster-response-pipeline;
+    source ./ds-disaster-response-pipeline/bin/activate;
+    pip3 install -r requirements.txt;
+
 
 TODO
 
