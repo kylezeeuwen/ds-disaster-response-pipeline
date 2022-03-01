@@ -1,0 +1,81 @@
+version: '2.1'
+services:
+  mysql:
+    container_name: mysql
+    image: 'mysql:8'
+    volumes:
+      - './docker-data/mysql:/var/lib/mysql'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: not_secure1
+      MYSQL_DATABASE: disaster_response
+      MYSQL_USER: disaster_response
+      MYSQL_PASSWORD: disaster_response
+#  metabase:
+#    container_name: metabase
+#    image: 'metabase/metabase:v0.42.0'
+#    ports:
+#      - '3000:3000'
+#    volumes:
+#      - './docker-data/metabase-data:/metabase-data'
+#    links:
+#      - 'mysql:mysql'
+#    environment:
+#      MB_DB_FILE: /metabase-data/metabase.db
+  process_data:
+    container_name: process_data
+    build: src
+    volumes:
+      - './docker-data/models:/models'
+    links:
+      - 'mysql:mysql'
+    environment:
+      MYSQL_DATABASE: disaster_response
+      MYSQL_USER: disaster_response
+      MYSQL_PASSWORD: disaster_response
+      MYSQL_HOST: mysql
+      MODEL_DIRPATH: /models
+    profiles:
+      - process_data
+    depends_on:
+      - mysql
+    command: ['main.py', 'process_data']
+  train_classifier:
+    container_name: train_classifier
+    build: src
+    volumes:
+      - './docker-data/models:/models'
+    links:
+      - 'mysql:mysql'
+    environment:
+      MYSQL_DATABASE: disaster_response
+      MYSQL_USER: disaster_response
+      MYSQL_PASSWORD: disaster_response
+      MYSQL_HOST: mysql
+      MODEL_DIRPATH: /models
+    profiles:
+      - train_classifier
+    depends_on:
+      - mysql
+    command: ['main.py', 'train_classifier']
+  flask_app:
+    container_name: flask_app
+    build: src
+    volumes:
+      - './docker-data/models:/models'
+    links:
+      - 'mysql:mysql'
+    ports:
+      - '5000:5000'
+    environment:
+      MYSQL_DATABASE: disaster_response
+      MYSQL_USER: disaster_response
+      MYSQL_PASSWORD: disaster_response
+      MYSQL_HOST: mysql
+      MODEL_DIRPATH: /models
+    depends_on:
+        - mysql
+    profiles:
+      - launch_app
+    command: ['main.py', 'launch_app']

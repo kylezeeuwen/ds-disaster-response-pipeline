@@ -1,4 +1,7 @@
 .ipynb_checkpoints
 venv
-workspace/data/DisasterResponse.db
-workspace/data/DisasterResponse.db
+src/data/DisasterResponse.db
+docker-data/mysql
+docker-data/models
+docker-data/metabase-data
+__pycache__
