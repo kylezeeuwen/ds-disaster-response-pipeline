@@ -1,22 +1,15 @@
 YOU ARE HERE:
-  * dockerising python_runner and running via run.sh. Mid way through moving 3 tasks into a shared lib structure
-  
-* (DONE) launch_app from docker then cannot connect from host. Some networking stuff to do with docker + flask
-    * related : https://stackoverflow.com/questions/30323224/deploying-a-minimal-flask-app-in-docker-server-connection-issues
-
   * testing app changes via `drma; docker-compose build flask_app; docker-compose up -d mysql flask_app;  docker logs -f flask_app`
-    * getting caught on container not rebuilding, causing stale code to run and changes to not take affect
-
-  * use docker compose profiles to specify which to start
-    * https://stackoverflow.com/questions/45680958/can-you-define-optional-docker-compose-services
-    * https://docs.docker.com/compose/profiles/
+    * (DONE - could be improved) getting caught on container not rebuilding, causing stale code to run and changes to not take affect
+    * `./run.sh takes care of this`
+  
+  * how to prevent repeated nltk downloads - slowing down iteration time  
 
   * how to add an init section to a flask app
   
   * model retrieval should be abstracted
     * can i get checksum of model factory file ?
-    * save model name, timestamp, checksum, params
-
+  
   * reconcile flask_app vs launch_app naming
 
 * build tooling to evaluate model
