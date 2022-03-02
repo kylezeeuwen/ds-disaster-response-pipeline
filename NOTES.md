@@ -14,6 +14,8 @@ YOU ARE HERE:
   * how to add an init section to a flask app
   
   * model retrieval should be abstracted
+    * can i get checksum of model factory file ?
+    * save model name, timestamp, checksum, params
 
   * reconcile flask_app vs launch_app naming
 

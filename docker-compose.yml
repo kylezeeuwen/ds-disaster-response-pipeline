@@ -8,10 +8,10 @@ services:
     ports:
       - '3306:3306'
     environment:
-      MYSQL_ROOT_PASSWORD: not_secure1
-      MYSQL_DATABASE: disaster_response
-      MYSQL_USER: disaster_response
-      MYSQL_PASSWORD: disaster_response
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
 #  metabase:
 #    container_name: metabase
 #    image: 'metabase/metabase:v0.42.0'
@@ -31,11 +31,10 @@ services:
     links:
       - 'mysql:mysql'
     environment:
-      MYSQL_DATABASE: disaster_response
-      MYSQL_USER: disaster_response
-      MYSQL_PASSWORD: disaster_response
-      MYSQL_HOST: mysql
-      MODEL_DIRPATH: /models
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_HOST
     profiles:
       - process_data
     depends_on:
@@ -49,11 +48,12 @@ services:
     links:
       - 'mysql:mysql'
     environment:
-      MYSQL_DATABASE: disaster_response
-      MYSQL_USER: disaster_response
-      MYSQL_PASSWORD: disaster_response
-      MYSQL_HOST: mysql
-      MODEL_DIRPATH: /models
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_HOST
+      - MODEL_DIRPATH=/models
+      - MODEL_NAME
     profiles:
       - train_classifier
     depends_on:
@@ -69,11 +69,12 @@ services:
     ports:
       - '5000:5000'
     environment:
-      MYSQL_DATABASE: disaster_response
-      MYSQL_USER: disaster_response
-      MYSQL_PASSWORD: disaster_response
-      MYSQL_HOST: mysql
-      MODEL_DIRPATH: /models
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_HOST
+      - MODEL_DIRPATH=/models
+      - MODEL_NAME
     depends_on:
         - mysql
     profiles:

@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+from config.env import SAMPLE_RATE
+
 from lib.database import get_engine
 from lib.model_factory import get_model
 from lib.model_repository import save_model
@@ -46,13 +48,13 @@ category_names = [
     'direct_report'
 ]
 
-# TODO from config
-sample_rate=1
-
 def load_data():
     engine = get_engine()
     df = pd.read_sql("SELECT * FROM training_messages", engine)
-    df =df.sample(frac=sample_rate)
+    # TODO: could push to process_data
+    # how to not corrupt DB with incomplete sample rate
+    # could introduce DB WRITE SAMPLE RATE, TRAIN SAMPLE RATE, etc
+    df =df.sample(frac=SAMPLE_RATE)
 
     X = df['message']
     Y = df[category_names]
@@ -95,6 +97,6 @@ def train_classifier():
     Y_pred = evaluate_model(model, X_test, Y_test, category_names)
 
     print('Saving model...')
-    save_model('model1', model, parameters)
+    save_model(model, parameters) #NB model name specified in ENV
 
     print('Trained model saved!')

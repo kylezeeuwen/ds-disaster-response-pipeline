@@ -6,8 +6,14 @@ import pandas as pd
 from flask import Flask
 from flask import render_template, request, jsonify
 
+# from config.env import MODEL_NAME, MODEL_TIMESTAMP, SAMPLE_RATE
+
 from lib.model_repository import load_model
-(model, metadata) = load_model('model1')
+(model, metadata) = load_model() #NB model name specified in ENV
+print(f"app using MODEL_NAME={metadata.get('MODEL_NAME')}")
+print(f"app using MODEL_TIMESTAMP={metadata.get('MODEL_TIMESTAMP')}")
+print(f"app using SAMPLE_RATE={metadata.get('SAMPLE_RATE')}")
+print(f"app using MODEL_PARAMETERS={metadata.get('MODEL_PARAMETERS')}")
 
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'web_templates'))
 print('here')
