@@ -88,6 +88,11 @@ def train_classifier():
     parameters = {
         'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
 
+        'features__text_pipeline__vect__max_df': (0.5, 1.0),
+        'features__text_pipeline__vect__max_features': (10, 100, 500, 1000),
+        'features__text_pipeline__tfidf__use_idf': (True, False),
+
+
         # DISABLE FOR PERF REASONS
         # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
         # 'features__text_pipeline__vect__max_features': (None, 5000, 10000),
