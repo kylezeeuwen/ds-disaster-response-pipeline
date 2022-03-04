@@ -7,46 +7,6 @@ from lib.database import get_engine
 from lib.model_factory import get_model
 from lib.model_repository import save_model
 
-# TODO pull from DB
-category_names = [
-    'related',
-    'request',
-    'offer',
-    'aid_related',
-    'medical_help',
-    'medical_products',
-    'search_and_rescue',
-    'security',
-    'military',
-    'child_alone',
-    'water',
-    'food',
-    'shelter',
-    'clothing',
-    'money',
-    'missing_people',
-    'refugees',
-    'death',
-    'other_aid',
-    'infrastructure_related',
-    'transport',
-    'buildings',
-    'electricity',
-    'tools',
-    'hospitals',
-    'shops',
-    'aid_centers',
-    'other_infrastructure',
-    'weather_related',
-    'floods',
-    'storm',
-    'fire',
-    'earthquake',
-    'cold',
-    'other_weather',
-    'direct_report'
-]
-
 def load_data():
     engine = get_engine()
     df = pd.read_sql("SELECT * FROM training_messages", engine)
@@ -55,6 +15,7 @@ def load_data():
     # could introduce DB WRITE SAMPLE RATE, TRAIN SAMPLE RATE, etc
     df =df.sample(frac=SAMPLE_RATE)
 
+    category_names = pd.read_sql("SELECT * FROM category", engine)['category'].to_numpy()
     X = df['message']
     Y = df[category_names]
 
@@ -87,7 +48,6 @@ def train_classifier():
     # TODO where from ?
     parameters = {
         'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
-
         'features__text_pipeline__vect__max_df': (0.5, 1.0),
         'features__text_pipeline__vect__max_features': (10, 100, 500, 1000),
         'features__text_pipeline__tfidf__use_idf': (True, False),
