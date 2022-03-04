@@ -26,6 +26,10 @@ RUN python -m pip install --upgrade pip setuptools wheel --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+RUN python -m nltk.downloader punkt
+RUN python -m nltk.downloader stopwords
+RUN python -m nltk.downloader wordnet
+RUN python -m nltk.downloader omw-1.4
 
 COPY . /usr/app/
 
