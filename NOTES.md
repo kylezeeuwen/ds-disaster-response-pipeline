@@ -1,9 +1,18 @@
 YOU ARE HERE:
-  * testing app changes via `drma; docker-compose build flask_app; docker-compose up -d mysql flask_app;  docker logs -f flask_app`
+  * (DONE) testing app changes via `drma; docker-compose build flask_app; docker-compose up -d mysql flask_app;  docker logs -f flask_app`
     * (DONE - could be improved) getting caught on container not rebuilding, causing stale code to run and changes to not take affect
     * `./run.sh takes care of this`
   
-  * how to prevent repeated nltk downloads - slowing down iteration time  
+  * (DONE) how to prevent repeated nltk downloads - slowing down iteration time  
+
+  * capture Train and test IDs for model instance and write to DB
+  * update query in run_model_on_all_data to only score using Test
+  * update tables to have model specific results stored
+     * TODO: refactor results in DB so that we can save multiple models and compare 
+  * allow model instance selection on FE
+    * FE POC to return JSON
+  * TODO: add visualisations and submit    
+    * FE Chart1 : key metrics for each classifier
 
   * how to add an init section to a flask app
   
@@ -12,6 +21,10 @@ YOU ARE HERE:
   
   * reconcile flask_app vs launch_app naming
 
+  * reconcile docker-data vs src/data
+
+  * TODO allow MODEL-version overrides
+  
 * build tooling to evaluate model
     * the UI of the app to show if its good
     * docker-compose of the steps, and maybe mysql + metabase
@@ -19,16 +32,12 @@ YOU ARE HERE:
   * DONE: write results into DB
     * need to make a data frame out of the messages with predicted and actual for each category
 
-  * TODO: refactor to flat bin → lib structure
+  * (DONE) TODO: refactor to flat bin → lib structure
     extract sql_conn and tokenizer
 
   * TODO: save the model time, name, parameters into the pickle, and build downstream so we can select which model to use to classify
 
-  * TODO: refactor results in DB so that we can save multiple models and compare
-
-  * TODO: add visualisations and submit
-
-  * TODO must merge docker and docker-compose setups can have both
+  * (DONE) TODO must merge docker and docker-compose setups can have both
 
 Milestone (DONE)
   * writing category, result, classifications, result_summary into database. The flask app is using the model to return results
@@ -42,7 +51,7 @@ Milestone (DONE)
 
 Potential Variations/Improvements
 ---
-* FIXED by removing stopwords from the pickle file. I had to remove my tokenizer on a pickling/job dispatch error
+* (DONE) FIXED by removing stopwords from the pickle file. I had to remove my tokenizer on a pickling/job dispatch error
 * Need to clean data in terms of empty colums first, or did I do that in process_data
 * Use Spanish not English
 * Include POS (position of sentence) considerations when lemmatising

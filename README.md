@@ -17,35 +17,13 @@ Several assets were produced and made available in this repo:
 
 # Installation Notes
 
-## Run notebooks via docker
-
-This repo assumes a local docker installation, and uses the jupyter/datascience-notebook to create a portable workspace that requires no other installation.
+This repo assumes a local docker installation, and uses `docker-compose` to execute the data processing, model training, and app hosting. Using docker means that this workspace does not require any other installation.
 
 To get this running locally on OSX or Linux:
   * install [docker desktop](https://www.docker.com/products/docker-desktop)
-  * in your terminal of choice with CWD set to the repo root execute: `./bin/go.sh`
-  * in the lines of text output, find the localhost link and copy/paste it into your browser. Example link:
-    * `http://127.0.0.1:8888/lab?token=abc123beepbeep456boopboop`
+  * in your terminal of choice with CWD set to the repo root execute: `./run.sh MODEL_NAME`
 
-`./bin/go.sh` creates a docker container hosting the jupyter notebook with a mount the the `./notebooks` directory of this repo.
-
-This is the content of the bin/go file circa Nov 20, 2021:
-
-```js
-docker run --rm -p 8888:8888 --name ds-drp -e JUPYTER_ENABLE_LAB=yes -v $(pwd)/notebook:/home/jovyan/work jupyter/datascience-notebook:latest
-```
-
-## Run python scripts
-
-### Prerequisite: Activate python env
-
-    cd /Users/kyle/projects/udacity-data-science/ds-disaster-response-pipeline;
-    python3 -m venv venv;
-    source ./venv/bin/activate;
-    pip3 install -r requirements.txt;
-
-
-TODO
+`./run.sh` does the following things: TODO fill in once stable.
 
 # Motivation
 
@@ -61,11 +39,13 @@ TODO
 
 # How to interact with project
 
-The `ipynb` files should not be read directly using an IDE - they are meant to be interacted with using a browser. The Installation section above outlines how to run `./bin/go.sh` and then copy/paste the provided URL into a browser.
+Depends if you want to gerenate a model or just use an existing model.
 
-All notebooks can be rerun to reproduce the results.
-
-If you want to contribute, fork and submit a PR, that would be top notch.
+* If you want to generate a model then look at the results using the app: run `./run.sh generate MODEL_NAME` then open http://localhost:5000 in a browser
+  * you can change MODEL_NAME to whatever you want
+  
+* If you want to skip model generation generate a model then look at the results using the app: just run `./run.sh view MODEL_NAME` then open http://localhost:5000 in a browser
+  * model_name must be an existing model that is saved as `MODEL_NAME-latest.pkl` in the [./docker-data/models](./docker-data/models) directory
 
 # Licencing
 

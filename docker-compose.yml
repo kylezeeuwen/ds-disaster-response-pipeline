@@ -75,6 +75,7 @@ services:
       - MYSQL_HOST
       - MODEL_DIRPATH=/models
       - MODEL_NAME
+      - SAMPLE_RATE
     depends_on:
         - mysql
     profiles:

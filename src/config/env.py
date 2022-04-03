@@ -24,7 +24,5 @@ MODEL_NAME = os.getenv('MODEL_NAME')
 MODEL_TIMESTAMP = int(time.time())
 
 #TRAINING
-SAMPLE_RATE=0.1 # TODO wire to run.sh
+SAMPLE_RATE = float(os.getenv('SAMPLE_RATE'))
 
-print(f"MODEL_NAME={MODEL_NAME}")
-print(f"A={os.getenv('A')}")
