@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from config.env import SAMPLE_RATE
+from config.env import SAMPLE_RATE, MODEL_VERBOSITY, MODEL_PARALLELISM, MODEL_TEST_PROPORTION
 
 from lib.database import get_engine
 from lib.model_factory import get_model
@@ -39,11 +39,7 @@ def train_classifier():
     print(f"Loading data...")
     X, Y, category_names = load_data()
     # TODO test_size from config
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
-
-    # TODO from config
-    log_verbosity=4
-    parallelism=8
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=MODEL_TEST_PROPORTION)
 
     # TODO where from ?
     parameters = {
@@ -51,7 +47,6 @@ def train_classifier():
         'features__text_pipeline__vect__max_df': (0.5, 1.0),
         'features__text_pipeline__vect__max_features': (10, 100, 500, 1000),
         'features__text_pipeline__tfidf__use_idf': (True, False),
-
 
         # DISABLE FOR PERF REASONS
         # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
@@ -69,7 +64,7 @@ def train_classifier():
     }
 
     print('Building model...')
-    model = get_model(parameters, log_verbosity, parallelism)
+    model = get_model(parameters, MODEL_VERBOSITY, MODEL_PARALLELISM)
 
     print('Training model...')
     model.fit(X_train, Y_train)
