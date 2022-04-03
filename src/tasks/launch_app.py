@@ -16,8 +16,6 @@ print(f"app using SAMPLE_RATE={metadata.get('SAMPLE_RATE')}")
 print(f"app using MODEL_PARAMETERS={metadata.get('MODEL_PARAMETERS')}")
 
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'web_templates'))
-print('here')
-print(template_dir)
 app = Flask(__name__, template_folder=template_dir)
 
 # index webpage displays cool visuals and receives user input text for model

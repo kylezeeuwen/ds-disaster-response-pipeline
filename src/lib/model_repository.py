@@ -1,4 +1,6 @@
 import os
+from os import listdir
+from os.path import isfile, join
 import joblib
 import pickle
 
@@ -27,13 +29,24 @@ def save_model(model, model_parameters):
     with open(timestamped_model_filepath, 'wb') as f:
         pickle.dump({ 'model': model, 'metadata': metadata }, f)
 
-def load_model():
-    latest_model_filepath = os.path.join(MODEL_DIRPATH, f"{MODEL_NAME}-latest.pkl")
-    unpickled = joblib.load(latest_model_filepath)
+def list_models():
+    model_list = []
+    for filename in [f for f in listdir(MODEL_DIRPATH) if isfile(join(MODEL_DIRPATH, f))]:
+        (model, metadata) = _load_model(filename)
+        model_list.append(metadata)
 
-    (model, metadata) = (unpickled.get('model'), unpickled.get('metadata'))
-    print(f"SAMPLE_RATE={metadata.get('SAMPLE_RATE')}")
-    print(f"MODEL_NAME={metadata.get('MODEL_NAME')}")
-    print(f"MODEL_TIMESTAMP={metadata.get('MODEL_TIMESTAMP')}")
-    print(f"MODEL_PARAMETERS={metadata.get('MODEL_PARAMETERS')}")
-    return (model, metadata)
+    return model_list
+
+def load_model():
+    latest_model_filename = f"{MODEL_NAME}-latest.pkl"
+    return _load_model(latest_model_filename)
+
+def _load_model(filename):
+    try:
+        filepath = os.path.join(MODEL_DIRPATH, filename)
+        unpickled = joblib.load(filepath)
+
+        (model, metadata) = (unpickled.get('model'), unpickled.get('metadata'))
+        return (model, metadata)
+    except Exception:
+        print(Exception)

@@ -48,9 +48,9 @@ DOCKER_COMPOSE_ENV_PREPEND="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME MYSQ
 
 set -x
 
-docker-compose build process_data train_classifier flask_app
+docker-compose build process_data train_classifier flask_app 1>/dev/null 2>/dev/null
 
-docker-compose up -d mysql
+docker-compose up -d mysql 1>/dev/null 2>/dev/null
 
 if [ $GENERATE -eq 1 ]
   then
