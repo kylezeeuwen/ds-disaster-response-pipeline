@@ -1,68 +1,67 @@
-import os
-import json
-import plotly
+from flask import Flask, render_template, request, g
+from flask_cors import CORS
+
 import pandas as pd
 
-from flask import Flask
-from flask import render_template, request, jsonify
+# TODO this should be abstracted
+from sqlalchemy import text
 
-# from config.env import MODEL_NAME, MODEL_TIMESTAMP, SAMPLE_RATE
+from config.env import MODEL_NAME
+from lib.database import get_engine
+from lib.model_repository import list_models, load_model
 
-from lib.model_repository import load_model
+# TODO to app init
 (model, metadata) = load_model() #NB model name specified in ENV
-print(f"app using MODEL_NAME={metadata.get('MODEL_NAME')}")
-print(f"app using MODEL_TIMESTAMP={metadata.get('MODEL_TIMESTAMP')}")
-print(f"app using SAMPLE_RATE={metadata.get('SAMPLE_RATE')}")
-print(f"app using MODEL_PARAMETERS={metadata.get('MODEL_PARAMETERS')}")
 
-template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'web_templates'))
-app = Flask(__name__, template_folder=template_dir)
+engine = get_engine()
+df = pd.read_sql_table('category', engine)
+all_categories = df['category'].tolist()
 
-# index webpage displays cool visuals and receives user input text for model
-@app.route('/')
-@app.route('/index')
-def index():
-    
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
+# the /react-web path is provided via the docker-compose that maps src/react-web/build to /my-app
+app = Flask(__name__, static_url_path='', static_folder='/react-web', template_folder='/react-web')
+CORS(app)
 
-    # create visuals
-    # TODO: Below is an example - modify to create your own visuals
-    graphs = [
-    ]
-    
-    # encode plotly graphs in JSON
-    ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
-    graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
+@app.route("/")
+def hello():
+    return render_template("index.html")
 
-    # render web page with plotly graphs
-    return render_template('master.html', ids=ids, graphJSON=graphJSON)
+# TODO delete
+@app.route("/api/models")
+def models():
+    models = list_models()
+    return { "models": models }
 
+@app.route("/api/get-model-info")
+def get_model_info():
+    return metadata
 
-# web page that handles user query and displays model results
-@app.route('/go')
-def go():
-    # load data
-    from lib.database import get_engine
-    engine = get_engine()
-    # TODO get category_names not trainin messages
-    df = pd.read_sql_table('training_messages', engine)
+@app.route("/api/get-categories")
+def get_categories():
+    return { "categories": all_categories }
 
-    # save user input in query
-    query = request.args.get('query', '') 
+@app.route("/api/get-model-performance")
+def get_model_performance():
+  with engine.begin() as conn:
+    # TODO this method for determining the results of the latest model is hacky
+    qry = text(f"SELECT * FROM model_metrics where model = (SELECT MAX(model) FROM model_metrics WHERE model like '{MODEL_NAME}-%')")
+    resultset = conn.execute(qry)
+    results_as_dict = [x._asdict() for x in resultset]
+    return { 'metrics' : results_as_dict }
 
-    # use model to predict classification for query
-    classification_labels = model.predict([query])[0]
-    classification_results = dict(zip(df.columns[4:], classification_labels))
+# NB TODO there is no guarantee the model or the all_categories is loaded
+@app.route("/api/classify", methods=['POST'])
+def classify():
+    request_json = request.json
+    message = request_json.get('message','')
 
-    print(classification_results)
+    classification_labels_int64 = model.predict([message])[0]
+    classification_labels = [int(x) for x in classification_labels_int64]
+    classification_results = dict(zip(all_categories, classification_labels))
 
-    # This will render the go.html Please see that file. 
-    return render_template(
-        'go.html',
-        query=query,
-        classification_result=classification_results
-    )
+    return {
+        'message': message,
+        'classifications': classification_results,
+    }
 
 def launch_app():
     app.run(host='0.0.0.0', port=5000, debug=True)

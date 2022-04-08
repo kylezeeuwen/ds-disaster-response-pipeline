@@ -61,3 +61,13 @@ This is the work of Kyle Zeeuwen. There is lots of borrowed code from the Udacit
 
 * Udacity is so far so good 👍. TODO. Some summary notes can be found [here](./docs/project_rubric.md) 
 * Figure Eight (TODO)[TODO] provided the pre classifier message data.
+
+# Dev Notes
+
+python repl
+
+```
+cd src
+python3 -m venv venv; source ./venv/bin/activate; pip3 install -r requirements.txt
+MODEL_DIRPATH=../docker-data/models SAMPLE_RATE=1 MODEL_NAME=FOO MYSQL_ROOT_PASSWORD=not_secure1 MYSQL_DATABASE=disaster_response MYSQL_USER=disaster_response MYSQL_PASSWORD=disaster_response MYSQL_HOST=localhost python3 main.py <TASK>
+```
