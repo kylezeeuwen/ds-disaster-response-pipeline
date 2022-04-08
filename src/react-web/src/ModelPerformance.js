@@ -1,6 +1,9 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react'
 import Plot from 'react-plotly.js'
 
+import Grid from '@mui/material/Grid'
+import Container from '@mui/material/Container'
+
 const ModelPerformance = () => {
   const [categories, setCategories] = useState(null)
   const [metrics, setMetrics] = useState(null)
@@ -58,36 +61,59 @@ const ModelPerformance = () => {
   }, [categories, metrics])
 
     return categories && chartData ? (
-      <Fragment>
-        <Plot
-          data={[{ x: categories, y: chartData['ACC'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'Accuracy' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['PPV'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'Positive predictive value (PPV)' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['NPV'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'Negative predictive value (NPV)' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['TPR'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'true positive rate (TPR)' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['TNR'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'true negative rate (TNR)' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['P'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'positive samples' }}
-        />
-        <Plot
-          data={[{ x: categories, y: chartData['N'], type: 'bar', }]}
-          layout={{ width: 1000, height: 400, title: 'negative samples' }}
-        />
-      </Fragment>
+      <Container>
+        <Grid container spacing={1}>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['ACC'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'Accuracy' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['PPV'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'Positive predictive value (PPV)' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['NPV'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'Negative predictive value (NPV)' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['TPR'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'true positive rate (TPR)' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['TNR'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'true negative rate (TNR)' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['P'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'positive samples' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+          <Grid item>
+            <Plot
+              data={[{ x: categories, y: chartData['N'], type: 'bar', }]}
+              layout={{ width: 1160, height: 400, title: 'negative samples' }}
+              config={{ displayModeBar: false }}
+            />
+          </Grid>
+        </Grid>
+      </Container>
   ) : null
 }
 

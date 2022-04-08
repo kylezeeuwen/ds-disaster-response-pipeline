@@ -1,13 +1,15 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react'
-import ModelContext from './context/ModelContext'
+import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
+import Container from '@mui/material/Container'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
 const ModelInfoItem = ({field, value}) => {
   const valueDisplay = (field.match(/PARAMETERS/))
     ? (<pre>{value}</pre>)
     : value
 
-  return (<li>{field} : {valueDisplay}</li>)
+  return (<div>{field} : {valueDisplay}</div>)
 }
 
 const ModelSelector = () => {
@@ -48,10 +50,10 @@ const ModelSelector = () => {
   })
 
   return (
-    <div>
-      <div>Model Info:</div>
-      <ul>{modelListItems}</ul>
-    </div>
+    <Container>
+      <Typography variant="body">Model Info:</Typography>
+      <Stack spacing={2}>{modelListItems}</Stack>
+    </Container>
   )
 }
 
