@@ -47,6 +47,7 @@ def process_data():
     print('Cleaning data')
     df = clean_data(df)
 
+    #TODO howto cleanly teardown connection on exit
     engine = get_engine()
 
     print('Saving data')
