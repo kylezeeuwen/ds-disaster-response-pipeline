@@ -3,11 +3,13 @@ import pandas as pd
 from config.env import MESSAGES_FILEPATH, CATEGORIES_FILEPATH
 from lib.database import get_engine
 
+
 def load_data(messages_filepath, categories_filepath):
     messages = pd.read_csv(messages_filepath)
     categories_raw = pd.read_csv(categories_filepath)
     combined = messages.merge(categories_raw, how='left', on=['id'])
     return combined
+
 
 def clean_data(df):
     # category cell format : {category1-name}-{category1-value};{category2-name}-{category2-value}...
@@ -33,12 +35,15 @@ def clean_data(df):
 
     return df
 
+
 def save_data(df, engine):
     df.to_sql('training_messages', engine, index=False, if_exists='replace')
+
 
 def test_data(engine):
     record_count = engine.execute("SELECT count(*) AS c FROM training_messages").fetchall()[0][0]
     print(f"record count: {record_count}")
+
 
 def process_data():
     print('Loading data from CSV')
@@ -47,7 +52,7 @@ def process_data():
     print('Cleaning data')
     df = clean_data(df)
 
-    #TODO howto cleanly teardown connection on exit
+    # TODO howto cleanly teardown connection on exit
     engine = get_engine()
 
     print('Saving data')

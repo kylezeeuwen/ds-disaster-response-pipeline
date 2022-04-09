@@ -7,14 +7,15 @@ from lib.database import get_engine
 from lib.model_factory import get_model
 from lib.model_repository import save_model
 
+
 def load_data():
-    #TODO howto cleanly teardown connection on exit
+    # TODO howto cleanly teardown connection on exit
     engine = get_engine()
     df = pd.read_sql("SELECT * FROM training_messages", engine)
     # TODO: could push to process_data
     # how to not corrupt DB with incomplete sample rate
     # could introduce DB WRITE SAMPLE RATE, TRAIN SAMPLE RATE, etc
-    df =df.sample(frac=SAMPLE_RATE)
+    df = df.sample(frac=SAMPLE_RATE)
 
     category_names = pd.read_sql("SELECT * FROM category", engine)['category'].to_numpy()
     X = df['message']
@@ -22,14 +23,16 @@ def load_data():
 
     return (X, Y, category_names)
 
+
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
 
     metrics = []
     for idx, category in enumerate(category_names):
         y_test_single_classification = Y_test[category].tolist()
-        y_pred_single_classification = Y_pred[:,idx]
-        single_classifier_metrics = evaluate_single_classifier(y_test_single_classification, y_pred_single_classification)
+        y_pred_single_classification = Y_pred[:, idx]
+        single_classifier_metrics = evaluate_single_classifier(
+            y_test_single_classification, y_pred_single_classification)
 
         for metric, value in single_classifier_metrics.items():
             metrics.append({
@@ -41,8 +44,10 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     return metrics
 
+
 def divide_or_zero(a, b):
     return a / b if b != 0 else 0
+
 
 def evaluate_single_classifier(y_actual, y_predictions):
     '''
@@ -105,6 +110,7 @@ def evaluate_single_classifier(y_actual, y_predictions):
         "ACC": ACC,
     }
 
+
 def train_classifier():
 
     print(f"Loading data...")
@@ -154,14 +160,15 @@ def train_classifier():
 
     print('Evaluating model...')
     metrics = evaluate_model(model, X_test, Y_test, category_names)
-    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL', 'metric': 'train_set_size', 'value': len(X_train)})
-    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL', 'metric': 'test_set_size', 'value': len(X_test)})
-
+    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL',
+                   'metric': 'train_set_size', 'value': len(X_train)})
+    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL',
+                   'metric': 'test_set_size', 'value': len(X_test)})
 
     print('Saving model...')
     save_model(model, metrics, {
-      'parameter_candidates': parameters,
-      'parameters': model.best_params_,
-    }) #NB model name specified in ENV
+        'parameter_candidates': parameters,
+        'parameters': model.best_params_,
+    })  # NB model name specified in ENV
 
     print('Trained model saved!')

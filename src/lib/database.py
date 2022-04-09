@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 
 from config.env import DATABASE_TYPE, MYSQL_HOST, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, SQLITE_FILEPATH
 
+
 def get_engine():
     if DATABASE_TYPE == 'sqlite':
         return create_engine(f"sqlite:///{SQLITE_FILEPATH}")

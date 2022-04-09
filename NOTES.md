@@ -1,5 +1,7 @@
 YOU ARE HERE / TODO:
 
+  * remove all sqllite references
+  
   * train calssifier - how is it being scored
 
   * High level remaining:

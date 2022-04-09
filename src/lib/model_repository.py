@@ -15,6 +15,8 @@ from lib.database import get_engine
 from config.env import MODEL_DIRPATH, MODEL_NAME, MODEL_TIMESTAMP, SAMPLE_RATE
 
 # TODO add mechanism to select model using specific timestamp
+
+
 def save_model(model, metrics, model_parameters):
     latest_model_filepath = os.path.join(MODEL_DIRPATH, f"{MODEL_NAME}-latest.pkl")
     timestamped_model_filepath = os.path.join(MODEL_DIRPATH, f"{MODEL_NAME}-{MODEL_TIMESTAMP}.pkl")
@@ -26,17 +28,19 @@ def save_model(model, metrics, model_parameters):
     metadata['MODEL_PARAMETERS'] = model_parameters
 
     with open(latest_model_filepath, 'wb') as f:
-        pickle.dump({ 'model': model, 'metadata': metadata }, f)
+        pickle.dump({'model': model, 'metadata': metadata}, f)
 
     with open(timestamped_model_filepath, 'wb') as f:
-        pickle.dump({ 'model': model, 'metadata': metadata }, f)
+        pickle.dump({'model': model, 'metadata': metadata}, f)
 
-    #TODO howto cleanly teardown connection on exit
+    # TODO howto cleanly teardown connection on exit
     engine = get_engine()
     metrics_df = pd.DataFrame(metrics)
     metrics_df.to_sql('model_metrics', engine, index=False, if_exists='append')
 
-#TODO not currently used
+# TODO not currently used
+
+
 def list_models():
     model_list = []
     for filename in [f for f in listdir(MODEL_DIRPATH) if isfile(join(MODEL_DIRPATH, f))]:
@@ -45,9 +49,11 @@ def list_models():
 
     return model_list
 
+
 def load_model(model_name=MODEL_NAME):
     latest_model_filename = f"{model_name}-latest.pkl"
     return _load_model(latest_model_filename)
+
 
 def _load_model(filename):
     try:

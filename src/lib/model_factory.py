@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 from lib.tokenizer import my_tokenize
 
+
 def get_model(parameters, log_verbosity, parallelism):
     pipeline = Pipeline([
         ('features', FeatureUnion([
