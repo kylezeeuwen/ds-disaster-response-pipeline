@@ -7,6 +7,10 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 
 def conditionally_download_nltk_package(lookup_name, download_name):
+    '''
+    Helper fn to ensure nltk assets are preloaded
+    '''
+
     try:
         nltk.data.find(lookup_name)
     except LookupError:
@@ -21,10 +25,22 @@ conditionally_download_nltk_package('omw-1.4', 'omw-1.4')
 
 english_stopwords = stopwords.words("english")
 
-# TODO better name
+def basic_english_stopword_lemmatise_tokeniser(text):
+    '''
+    INPUT:
+    text - string - text to tokenise
 
+    OUTPUT:
+    words - list - list of tokens extracted from the input text
 
-def my_tokenize(text):
+    Basic English sentence tokeniser. Steps
+      * lowercase
+      * strip punctuation
+      * split into tokens using whitespace
+      * remove stop words
+      * apply lemmatisation using NLTK WordNetLemmatizer corpus
+    '''
+
     text = text.lower()
     text = re.sub(r"[^a-zA-Z0-9]", " ", text)
     words = word_tokenize(text)

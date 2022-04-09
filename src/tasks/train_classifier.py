@@ -7,111 +7,21 @@ from lib.database import get_engine
 from lib.model_factory import get_model
 from lib.model_repository import save_model
 
-
-def load_data():
-    # TODO howto cleanly teardown connection on exit
-    engine = get_engine()
-    df = pd.read_sql("SELECT * FROM training_messages", engine)
-    # TODO: could push to process_data
-    # how to not corrupt DB with incomplete sample rate
-    # could introduce DB WRITE SAMPLE RATE, TRAIN SAMPLE RATE, etc
-    df = df.sample(frac=SAMPLE_RATE)
-
-    category_names = pd.read_sql("SELECT * FROM category", engine)['category'].to_numpy()
-    X = df['message']
-    Y = df[category_names]
-
-    return (X, Y, category_names)
-
-
-def evaluate_model(model, X_test, Y_test, category_names):
-    Y_pred = model.predict(X_test)
-
-    metrics = []
-    for idx, category in enumerate(category_names):
-        y_test_single_classification = Y_test[category].tolist()
-        y_pred_single_classification = Y_pred[:, idx]
-        single_classifier_metrics = evaluate_single_classifier(
-            y_test_single_classification, y_pred_single_classification)
-
-        for metric, value in single_classifier_metrics.items():
-            metrics.append({
-                'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}",
-                'category': category,
-                'metric': metric,
-                'value': value
-            })
-
-    return metrics
-
-
-def divide_or_zero(a, b):
-    return a / b if b != 0 else 0
-
-
-def evaluate_single_classifier(y_actual, y_predictions):
+def train_classifier():
     '''
     INPUT:
-    y_actual - array - actual results
-    y_predictions - array - predictions
+    None
 
     OUTPUT:
-    metrics - a series of performance metrics
+    None
+
+    Entry point called from main.py. Steps:
+      * Load classified training messages
+      * Split into train vs test set
+      * Fit model using grid search and parameters specified below
+      * Compute performance metrics
+      * Save model to a pickle file and save metric to database
     '''
-
-    TP = 0
-    FP = 0
-    TN = 0
-    FN = 0
-    P = 0
-    N = 0
-
-    for i in range(len(y_predictions)):
-        if y_actual[i] == 1:
-            P += 1
-        if y_actual[i] == 0:
-            N += 1
-        if y_actual[i] == y_predictions[i] == 1:
-            TP += 1
-        if y_predictions[i] == 1 and y_actual[i] != y_predictions[i]:
-            FP += 1
-        if y_actual[i] == y_predictions[i] == 0:
-            TN += 1
-        if y_predictions[i] == 0 and y_actual[i] != y_predictions[i]:
-            FN += 1
-
-    # source: https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-    # sensitivity, recall, hit rate, or true positive rate (TPR)
-    TPR = divide_or_zero(TP, P)
-
-    # specificity, selectivity or true negative rate (TNR)
-    TNR = divide_or_zero(TN, N)
-
-    # precision or positive predictive value (PPV)
-    PPV = divide_or_zero(TP, (TP + FP))
-
-    # ____ or negative predictive value (PPV)
-    NPV = divide_or_zero(TN, (TN + FN))
-
-    # accuracy
-    ACC = divide_or_zero((TP + TN), (P + N))
-
-    return {
-        "P": P,
-        "N": N,
-        "TP": TP,
-        "FP": FP,
-        "TN": TN,
-        "FN": FN,
-        "TPR": TPR,
-        "TNR": TNR,
-        "PPV": PPV,
-        "NPV": NPV,
-        "ACC": ACC,
-    }
-
-
-def train_classifier():
 
     print(f"Loading data...")
     X, Y, category_names = load_data()
@@ -180,3 +90,145 @@ def train_classifier():
     })  # NB model name specified in ENV
 
     print('Trained model saved!')
+
+def load_data():
+    '''
+    INPUT:
+    None
+
+    OUTPUT:
+    X - pandas Series - the messages to classify
+    Y - pandas Dataframe - the classifications for the messages, each cell value is (0|1)
+    category_names - list - list of categories to classify messages into
+
+    Steps:
+      * load the classified message corpus from the database
+      * apply the sample rate (for development purposes to decrease run time) to reduce the corpus size
+      * split the corpus into X and Y for ML training
+    '''
+
+    # TODO howto cleanly teardown connection on exit
+    engine = get_engine()
+    df = pd.read_sql("SELECT * FROM training_messages", engine)
+    df = df.sample(frac=SAMPLE_RATE)
+
+    category_names = pd.read_sql("SELECT * FROM category", engine)['category'].to_numpy()
+    X = df['message']
+    Y = df[category_names]
+
+    return (X, Y, category_names)
+
+
+def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    INPUT:
+    model - a trained classifier
+    X_test - pandas Series - messages to test classifier
+    Y_test - pandas Dataframe - message classifications
+    category_names - category name index for Y_test
+
+    OUTPUT:
+    metrics - list - list of classification performance metrics for the model. Each list item is a dict containing:
+      * model - string - model identifier - NAME-TIMESTAMP
+      * category - string - the classification category that the metric describes
+      * metric - string - the name of the metric. Currently (P, , N , TP , FP , TN , FN , TPR , TNR , PPV , NPV , ACC)
+      * value - float - the value of the metric
+
+    Steps:
+      * classify the test messages
+      * for each category, compute a series of performance metrics
+    '''
+
+    Y_pred = model.predict(X_test)
+
+    metrics = []
+    for idx, category in enumerate(category_names):
+        y_test_single_classification = Y_test[category].tolist()
+        y_pred_single_classification = Y_pred[:, idx]
+        single_classifier_metrics = evaluate_single_classifier(
+            y_test_single_classification, y_pred_single_classification)
+
+        for metric, value in single_classifier_metrics.items():
+            metrics.append({
+                'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}",
+                'category': category,
+                'metric': metric,
+                'value': value
+            })
+
+    return metrics
+
+
+def divide_or_zero(numerator, denominator):
+    '''
+    INPUT:
+    numerator - numeric
+    denominator - numeric
+
+    OUTPUT:
+    numeric
+
+    Divide numerator by denominotor, unless denominator is 0 then just return 0
+    '''
+    return numerator / denominator if denominator != 0 else 0
+
+def evaluate_single_classifier(y_actual, y_predictions):
+    '''
+    INPUT:
+    y_actual - array - actual results
+    y_predictions - array - predictions
+
+    OUTPUT:
+    metrics - a series of performance metrics
+    '''
+
+    TP = 0
+    FP = 0
+    TN = 0
+    FN = 0
+    P = 0
+    N = 0
+
+    for i in range(len(y_predictions)):
+        if y_actual[i] == 1:
+            P += 1
+        if y_actual[i] == 0:
+            N += 1
+        if y_actual[i] == y_predictions[i] == 1:
+            TP += 1
+        if y_predictions[i] == 1 and y_actual[i] != y_predictions[i]:
+            FP += 1
+        if y_actual[i] == y_predictions[i] == 0:
+            TN += 1
+        if y_predictions[i] == 0 and y_actual[i] != y_predictions[i]:
+            FN += 1
+
+    # source: https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+    # sensitivity, recall, hit rate, or true positive rate (TPR)
+    TPR = divide_or_zero(TP, P)
+
+    # specificity, selectivity or true negative rate (TNR)
+    TNR = divide_or_zero(TN, N)
+
+    # precision or positive predictive value (PPV)
+    PPV = divide_or_zero(TP, (TP + FP))
+
+    # ____ or negative predictive value (PPV)
+    NPV = divide_or_zero(TN, (TN + FN))
+
+    # accuracy
+    ACC = divide_or_zero((TP + TN), (P + N))
+
+    return {
+        "P": P,
+        "N": N,
+        "TP": TP,
+        "FP": FP,
+        "TN": TN,
+        "FN": FN,
+        "TPR": TPR,
+        "TNR": TNR,
+        "PPV": PPV,
+        "NPV": NPV,
+        "ACC": ACC,
+    }

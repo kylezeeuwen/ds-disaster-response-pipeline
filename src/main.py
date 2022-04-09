@@ -16,3 +16,4 @@ if __name__ == '__main__':
         launch_app()
     else:
         raise Exception(f"Unrecognised action {action}")
+        exit(1)
