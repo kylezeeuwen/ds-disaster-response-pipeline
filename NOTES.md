@@ -1,4 +1,5 @@
 YOU ARE HERE / TODO:
+  * Doc file with reviewer notes and file manifest
   * APP: improve model info presentation
   * react strip out model name context - no longer needed
   * re-enable some parameters - maybe allow selection of param sets via ENV+CLI
