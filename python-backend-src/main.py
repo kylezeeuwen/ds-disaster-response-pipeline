@@ -10,10 +10,10 @@ if __name__ == '__main__':
         # NB lazy import modules
         from tasks.train_classifier import train_classifier
         train_classifier()
-    elif action == 'launch_app':
+    elif action == 'flask_app':
         # NB lazy import modules
-        from tasks.launch_app import launch_app
-        launch_app()
+        from tasks.flask_app import flask_app
+        flask_app()
     else:
         raise Exception(f"Unrecognised action {action}")
         exit(1)

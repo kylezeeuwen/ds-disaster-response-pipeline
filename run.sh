@@ -64,7 +64,7 @@ if [ $VIEW -eq 1 ]
     docker-compose run build_react
 
     docker-compose build flask_app
-    command="$DOCKER_COMPOSE_ENV_PREPEND docker-compose --profile launch_app up -d"
+    command="$DOCKER_COMPOSE_ENV_PREPEND docker-compose --profile flask_app up -d"
     eval $command
 fi
 

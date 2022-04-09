@@ -69,8 +69,8 @@ services:
     depends_on:
         - mysql
     profiles:
-      - launch_app
-    command: ['main.py', 'launch_app']
+      - flask_app
+    command: ['main.py', 'flask_app']
   build_react:
     container_name: build_react
     build: react-frontend-src

@@ -21,7 +21,7 @@ all_categories = df['category'].tolist()
 app = Flask(__name__, static_url_path='', static_folder='/react-build', template_folder='/react-build')
 CORS(app)
 
-def launch_app():
+def flask_app():
     '''
     INPUT:
     None
@@ -36,7 +36,7 @@ def launch_app():
 @app.route('/')
 def root():
     '''serve index.html when / is requested'''
-    
+
     return app.send_static_file('index.html')
 
 @app.route("/api/get-model-info")

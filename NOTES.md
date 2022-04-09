@@ -1,18 +1,6 @@
-new directory layout
-docker-data
-docs
-python-backend-src
-  Dockerfile
-react-frontend-src
-  Dockerfile
-run.sh
-
 YOU ARE HERE / TODO:
-  * fix dockerfile python + npm issue
-  * some apt-get install in dockerfile look unnecessary
   * react strip out model name context - no longer needed
   * improve model info presentation
-  * reconcile flask_app vs launch_app naming
   * reconcile docker-data vs src/data
   * re-enable some parameters
   * categories vs classifications
