@@ -126,11 +126,19 @@ def train_classifier():
         # 'features__text_pipeline__vect__max_features': (10, 100, 500, 1000),
 
         # APR 7 set - ran near 24 hours
-        'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2), (1, 3)),
-        'features__text_pipeline__vect__min_df': (0.0001, 0.001, 0.01),
-        'features__text_pipeline__vect__max_df': (0.5, 0.75, 0.9, 1.0),
-        'features__text_pipeline__vect__max_features': (100, 1000, 5000, None),
-        'features__text_pipeline__tfidf__use_idf': (True, False),
+        # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2), (1, 3)),
+        # 'features__text_pipeline__vect__min_df': (0.0001, 0.001, 0.01),
+        # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 0.9, 1.0),
+        # 'features__text_pipeline__vect__max_features': (100, 1000, 5000, None),
+        # 'features__text_pipeline__tfidf__use_idf': (True, False),
+
+        # TEST set - quick just prove the pipeline not broke
+        'features__text_pipeline__vect__ngram_range': ((1, 1), ),
+        'features__text_pipeline__vect__min_df': (0.00001, ),
+        'features__text_pipeline__vect__max_df': (0.75, ),
+        'features__text_pipeline__vect__max_features': (100, ),
+        'features__text_pipeline__tfidf__use_idf': (True, ),
+
 
         # DISABLE FOR PERF REASONS
         # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
