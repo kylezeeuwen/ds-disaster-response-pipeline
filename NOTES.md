@@ -1,10 +1,8 @@
 YOU ARE HERE / TODO:
+  * APP: improve model info presentation
   * react strip out model name context - no longer needed
-  * improve model info presentation
-  * reconcile docker-data vs src/data
-  * re-enable some parameters
-  * categories vs classifications
-  * CLASSIFIER: evaluate alternatives to demonetrate an "OR" in pipeline ?
+  * re-enable some parameters - maybe allow selection of param sets via ENV+CLI
+  * CLASSIFIER: evaluate alternatives to demonstrate an "OR" in pipeline ?
 
 DEFER
   * APP: The bundle size is significantly larger than recommended.

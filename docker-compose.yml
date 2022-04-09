@@ -16,6 +16,7 @@ services:
     container_name: process_data
     build: python-backend-src
     volumes:
+      - './docker-data/csv:/csv'
       - './docker-data/models:/models'
     links:
       - 'mysql:mysql'
