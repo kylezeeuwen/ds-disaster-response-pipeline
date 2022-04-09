@@ -26,11 +26,10 @@ MODEL_PARALLELISM = int(os.getenv('MODEL_PARALLELISM', DEFAULT_MODEL_PARALLELISM
 # file system
 CSV_DIR = os.getenv('CSV_DIR', '/csv') # docker-data/csv is volume mounted to /csv via docker-compose
 MODEL_DIRPATH = os.getenv('MODEL_DIRPATH', '/models') # docker-data/models is volume mounted to /models via docker-compose
-MESSAGES_FILEPATH = os.path.join(CSV_DIR, 'input', 'disaster_messages.csv')
-CATEGORIES_FILEPATH = os.path.join(CSV_DIR, 'input', 'disaster_categories.csv')
+MESSAGES_FILEPATH = os.path.join(CSV_DIR, 'disaster_messages.csv')
+CATEGORIES_FILEPATH = os.path.join(CSV_DIR, 'disaster_categories.csv')
 
 # database
-DATABASE_TYPE = 'mysql'
 MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
 MYSQL_USER = os.getenv('MYSQL_USER')
 MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')

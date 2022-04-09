@@ -42,7 +42,6 @@ services:
       - MYSQL_USER
       - MYSQL_PASSWORD
       - MYSQL_HOST
-      - MODEL_DIRPATH=/models
       - MODEL_NAME
     profiles:
       - train_classifier
@@ -64,7 +63,6 @@ services:
       - MYSQL_USER
       - MYSQL_PASSWORD
       - MYSQL_HOST
-      - MODEL_DIRPATH=/models
       - MODEL_NAME
       - SAMPLE_RATE
     depends_on:
