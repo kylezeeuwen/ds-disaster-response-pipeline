@@ -61,8 +61,7 @@ const MessageClassifier = () => {
   useEffect(() => {
     const listener = event => {
       if (event.code === "Enter" || event.code === "NumpadEnter") {
-        console.log("Enter key was pressed. Run your function.")
-        event.preventDefault();
+        event.preventDefault()
         classifyMessage()
         setMessage('')
       }
@@ -75,15 +74,15 @@ const MessageClassifier = () => {
 
   const classifiedMessageComponents = classifiedMessages.map(({ message, classifications }) => {
     let classificationChips = classifications.map(classification =>
-      <Chip label={classification} color="success" size="small" style={{ width: '200px' }}/>
+      <Chip key={classification} label={classification} color="success" size="small" style={{ width: '200px' }}/>
     )
 
     if (classificationChips.length === 0) {
-      classificationChips = [<Chip label={'none'} color="error" size="small" style={{ width: '200px' }}/>]
+      classificationChips = [<Chip key='none' label={'none'} color="error" size="small" style={{ width: '200px' }}/>]
     }
 
     return (
-      <Grid container spacing={1}>
+      <Grid key={message} container spacing={1}>
         <Grid item xs={4}><Typography variant="body">{message}</Typography></Grid>
         <Grid item xs={8}><Stack direction="row" justifyContent="flex-start" spacing={1}>{classificationChips}</Stack></Grid>
       </Grid>
