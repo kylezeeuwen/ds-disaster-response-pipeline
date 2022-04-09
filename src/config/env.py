@@ -23,7 +23,6 @@ DATA_DIR = os.path.join(SRC_DIR, 'data')
 MESSAGES_FILEPATH = os.path.join(DATA_DIR, 'input', 'disaster_messages.csv')
 CATEGORIES_FILEPATH = os.path.join(DATA_DIR, 'input', 'disaster_categories.csv')
 MODEL_DIRPATH = os.getenv('MODEL_DIRPATH')
-SQLITE_FILEPATH = os.path.join(DATA_DIR, 'output', 'DisasterResponse.db')  # not used when DATABASE_TYPE = 'mysql'
 
 # database
 DATABASE_TYPE = 'mysql'
