@@ -14,7 +14,7 @@ services:
       - MYSQL_PASSWORD
   process_data:
     container_name: process_data
-    build: src
+    build: python-backend-src
     volumes:
       - './docker-data/models:/models'
     links:
@@ -31,7 +31,7 @@ services:
     command: ['main.py', 'process_data']
   train_classifier:
     container_name: train_classifier
-    build: src
+    build: python-backend-src
     volumes:
       - './docker-data/models:/models'
     links:
@@ -50,9 +50,10 @@ services:
     command: ['main.py', 'train_classifier']
   flask_app:
     container_name: flask_app
-    build: src
+    build: python-backend-src
     volumes:
       - './docker-data/models:/models'
+      - './docker-data/react-build:/react-build'
     links:
       - 'mysql:mysql'
     ports:
@@ -70,3 +71,10 @@ services:
     profiles:
       - launch_app
     command: ['main.py', 'launch_app']
+  build_react:
+    container_name: build_react
+    build: react-frontend-src
+    volumes:
+      - './docker-data/react-build:/usr/app/build'
+    profiles:
+      - build_react

@@ -4,4 +4,5 @@ src/data/DisasterResponse.db
 docker-data/mysql
 docker-data/models
 docker-data/metabase-data
+docker-data/react-build
 __pycache__

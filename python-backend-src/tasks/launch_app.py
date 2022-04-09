@@ -17,8 +17,8 @@ engine = get_engine()
 df = pd.read_sql_table('category', engine)
 all_categories = df['category'].tolist()
 
-# the /react-web path is provided via the docker-compose that maps src/react-web/build to /my-app
-app = Flask(__name__, static_url_path='', static_folder='/react-web', template_folder='/react-web')
+# the /react-build path is provided via the docker-compose that maps docker-data/react-build to /react-build
+app = Flask(__name__, static_url_path='', static_folder='/react-build', template_folder='/react-build')
 CORS(app)
 
 def launch_app():
@@ -32,6 +32,12 @@ def launch_app():
     Entry point called from main.py. Start the app listening on port 5000 for incoming requests
     '''
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+@app.route('/')
+def root():
+    '''serve index.html when / is requested'''
+    
+    return app.send_static_file('index.html')
 
 @app.route("/api/get-model-info")
 def get_model_info():

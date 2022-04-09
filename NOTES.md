@@ -1,5 +1,15 @@
+new directory layout
+docker-data
+docs
+python-backend-src
+  Dockerfile
+react-frontend-src
+  Dockerfile
+run.sh
+
 YOU ARE HERE / TODO:
   * fix dockerfile python + npm issue
+  * some apt-get install in dockerfile look unnecessary
   * react strip out model name context - no longer needed
   * improve model info presentation
   * reconcile flask_app vs launch_app naming
@@ -9,6 +19,7 @@ YOU ARE HERE / TODO:
   * CLASSIFIER: evaluate alternatives to demonetrate an "OR" in pipeline ?
 
 DEFER
+  * APP: The bundle size is significantly larger than recommended.
   * CODE QUALITY: metrics should be a class as I pass it around a lot
   * NLP STEPS: Better lemmetiser ?
   * NLP STEPS: Include POS (position of sentence) considerations when lemmatising

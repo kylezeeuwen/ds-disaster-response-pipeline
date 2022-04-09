@@ -11,8 +11,6 @@ RUN apt-get update \
     build-essential \
     ca-certificates \
     libpq-dev \
-    nodejs \
-    npm \
   && apt-get clean \
   && rm -rf \
     /var/lib/apt/lists/* \
@@ -38,12 +36,6 @@ RUN python -m nltk.downloader omw-1.4
 COPY . /usr/app/
 
 # TODO this should be done in a seperate container
-
-#WORKDIR /usr/app/react-web
-#RUN npm install
-#RUN npm run build
-#RUN rm -r /usr/app/react-web/node_modules
-#RUN cp -r /usr/app/react-web/build /react-web
 
 # Set docker basics
 WORKDIR /usr/app/

@@ -48,18 +48,22 @@ DOCKER_COMPOSE_ENV_PREPEND="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME MYSQ
 
 set -x
 
-docker-compose build process_data train_classifier flask_app # 1>/dev/null 2>/dev/null
-
 docker-compose up -d mysql 1>/dev/null 2>/dev/null
 
 if [ $GENERATE -eq 1 ]
   then
+    docker-compose build process_data # 1>/dev/null 2>/dev/null
     docker-compose run $DOCKER_RUN_APP_ENV process_data
+    docker-compose build train_classifier # 1>/dev/null 2>/dev/null
     docker-compose run $DOCKER_RUN_APP_ENV train_classifier
 fi
 
 if [ $VIEW -eq 1 ]
   then
+    docker-compose build build_react # 1>/dev/null 2>/dev/null
+    docker-compose run build_react
+
+    docker-compose build flask_app
     command="$DOCKER_COMPOSE_ENV_PREPEND docker-compose --profile launch_app up -d"
     eval $command
 fi
