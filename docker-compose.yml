@@ -12,17 +12,6 @@ services:
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
-#  metabase:
-#    container_name: metabase
-#    image: 'metabase/metabase:v0.42.0'
-#    ports:
-#      - '3000:3000'
-#    volumes:
-#      - './docker-data/metabase-data:/metabase-data'
-#    links:
-#      - 'mysql:mysql'
-#    environment:
-#      MB_DB_FILE: /metabase-data/metabase.db
   process_data:
     container_name: process_data
     build: src
