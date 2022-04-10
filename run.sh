@@ -5,14 +5,14 @@
 # * Build environment variable strings
 # * start services and execute tasks
 
-USAGE="Usage: ./run.sh (generate|view) MODEL_NAME [PARAMETER_SET] [SAMPLE_RATE]"
+USAGE="Usage: ./run.sh (generate|view) [MODEL_NAME] [PARAMETER_SET] [SAMPLE_RATE]"
 
 ######
 # Get parameters from command line
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
   then
-    echo "ERROR: missing required params (generate|view) MODEL_NAME" 1>&2
+    echo "ERROR: missing required params (generate|view)" 1>&2
     echo $USAGE 1>&2
     exit 1
 fi
@@ -30,7 +30,11 @@ else
 fi
 echo "run.sh: MODE is $1"
 
-MODEL_NAME=$2
+MODEL_NAME='DEFAULT_MODEL'
+if [ $# -ge 2 ]
+  then
+    MODEL_NAME=$2
+fi
 echo "run.sh: MODEL_NAME is $MODEL_NAME"
 
 PARAMETER_SET='KNOWN_GOOD' # see ./python-backend-src/lib/model_factory.py for options
@@ -71,6 +75,7 @@ done
 
 command="$DOCKER_COMPOSE_ENV_STRING docker-compose up -d mysql"
 eval $command
+sleep 2 # wait for MySQL to start
 
 
 if [ $GENERATE -eq 1 ]

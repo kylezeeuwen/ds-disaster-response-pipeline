@@ -42,7 +42,7 @@ def train_classifier():
     save_model(
         model,
         train_set_size=len(X_train),
-        test_set_size=len(X_train),
+        test_set_size=len(X_test),
         chosen_parameters=model.best_params_,
         metrics=metrics
     )

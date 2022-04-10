@@ -1,7 +1,7 @@
 import pandas as pd
 
 from config.env import MESSAGES_FILEPATH, CATEGORIES_FILEPATH
-from lib.database import get_engine
+from lib.database import get_engine, run_statement
 
 def process_data():
     '''
@@ -21,12 +21,12 @@ def process_data():
     df = load_data(MESSAGES_FILEPATH, CATEGORIES_FILEPATH)
 
     print('Cleaning data')
-    df = clean_data(df)
+    (df, category_colnames) = clean_data(df)
 
     engine = get_engine()
 
     print('Saving data')
-    save_data(df, engine)
+    save_data(df, category_colnames, engine)
 
     print('Cleaned data saved to database!')
     test_data(engine)
@@ -92,10 +92,10 @@ def clean_data(df):
     # deduplicate using the message
     df = df.drop_duplicates(subset=['message'], keep='first')
 
-    return df
+    return df, category_colnames
 
 
-def save_data(df, engine):
+def save_data(df, category_colnames, engine):
     '''
     INPUT:
     df - pandas Dataframe - the datafrom from clead_data containing one row per message, with 36 classification columns
@@ -107,8 +107,11 @@ def save_data(df, engine):
     save the df contents into the training_messages column in the MySQL database
     '''
 
+    run_statement("CREATE DATABASE IF NOT EXISTS disaster_response")
+
     df.to_sql('training_messages', engine, index=False, if_exists='replace')
 
+    pd.Series(category_colnames, name='category').to_sql('category', engine, index=False, if_exists='replace')
 
 def test_data(engine):
     '''

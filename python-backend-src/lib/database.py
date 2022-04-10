@@ -18,3 +18,8 @@ def run_query(query_text):
         qry = text(query_text)
         resultset = conn.execute(qry)
         return [x._asdict() for x in resultset]
+
+def run_statement(query_text):
+    with get_engine().begin() as conn:
+        qry = text(query_text)
+        conn.execute(qry)

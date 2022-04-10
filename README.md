@@ -63,11 +63,7 @@ From above:
 
 > The author is a noob data scientist completing the Udacity Data Science Nano degree, and this is the second assignment.
 
-## File Descriptors
-
-TODO The xxx file contains a manifest of files that also includes notes for reviewers 
-
-### Development Notes
+## Development Notes
 
 ### Run the react app in dev mode with live reload
 
@@ -106,6 +102,56 @@ The `flask_app` is started using docker-compose in daemon mode (`-d`) so the log
 * `docker logs -f flask_app` : this will print all the logs and continue printing logs as they are written
 
 Note that if you want to see output it is best to call `print(FOO, flush=True)` in python to ensure logs are immediately flushed.
+
+### Areas of Future Work
+  * APP: quote from react output "The bundle size is significantly larger than recommended."
+  * CODE QUALITY: metrics should be a class as I pass it around a lot
+  * NLP STEPS: Better lemmetiser ?
+  * NLP STEPS: Include POS (position of sentence) considerations when lemmatising
+  * NLP STEPS: Apply Named Entity Recognition (NER)
+  * NLP STEPS: Use Spanish not English
+  * CLASSIFIER: do i do anything with genre ?
+  * CLASSIFIER: train classifier - how is it being scored
+  * CLASSIFIER: TODO allow selection of non latest MODEL-version overrides
+  * CLASSIFIER: evaluate alternatives to demonstrate an "OR" in pipeline ?    
+  * PRESENTATION: allow selection of specific categories in the UI
+  * PRESENTATION: get samples of messages based on classification
+
+### Metabase Notes 
+
+Although I opted to not use metabase in repo, these are the notes in case I add it back
+ 
+  * connecting metabase to mysql
+    * docker compose has a link that names mysql host as `mysql`
+    * need to add `allowPublicKeyRetrieval=true` to connection settings options to workaround `RSA public key is not available client side (option serverRsaPublicKeyFile not set)` error  
+
+  * metabase docker compose entry
+
+
+    metabase:
+      container_name: metabase
+      image: 'metabase/metabase:v0.42.0'
+      ports:
+        - '3000:3000'
+      volumes:
+        - './docker-data/metabase-data:/metabase-data'
+      links:
+        - 'mysql:mysql'
+      environment:
+        MB_DB_FILE: /metabase-data/metabase.db
+
+### How was the React App bootstrapped ?
+
+It was extremely easy to add react to the repo
+
+* followed instructions [here](https://reactjs.org/docs/create-a-new-react-app.html)
+
+
+    npx create-react-app my-app
+    cd my-app
+    npm start 
+
+* similarly MUI just worked out of the box. Followed instructions [here](https://mui.com/material-ui/getting-started/installation/)
 
 ## Licencing
 

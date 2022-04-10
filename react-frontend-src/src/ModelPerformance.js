@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import Plot from 'react-plotly.js'
 
 import Grid from '@mui/material/Grid'
@@ -103,7 +103,7 @@ const ModelPerformance = () => {
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['P'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'positive samples' }}
+              layout={{ width: 1160, height: 400, title: 'positive samples in test set' }}
               config={{ displayModeBar: false }}
             />
           </Grid>

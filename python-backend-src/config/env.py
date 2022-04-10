@@ -1,7 +1,6 @@
 import os
 import time
 
-
 # Ive chosen a flat model for passing config to libs: let the lib directly access the config.
 # + lends itself to an IOC model, which I have not implemented in this small project
 # + makes early iterations much easier.
