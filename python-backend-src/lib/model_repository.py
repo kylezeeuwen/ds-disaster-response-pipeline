@@ -15,7 +15,6 @@ def save_model(
     chosen_parameters={},
 ):
     '''
-    TODO: update docstring with new params
     INPUT:
     model - a trained scikit-learn model
     metrics - list - list of classification performance metrics for the model. Each list item is a dict containing:
