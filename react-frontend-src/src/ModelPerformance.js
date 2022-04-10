@@ -3,6 +3,7 @@ import Plot from 'react-plotly.js'
 
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
 
 const ModelPerformance = () => {
   const [categories, setCategories] = useState(null)
@@ -62,39 +63,40 @@ const ModelPerformance = () => {
 
     return categories && chartData ? (
       <Container>
+        <Typography variant={"h3"}>Model Performance</Typography>
         <Grid container spacing={1}>
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['ACC'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'Accuracy' }}
+              layout={{ width: 1160, height: 400, title: 'Accuracy : ((TP + TN) / (P + N))' }}
               config={{ displayModeBar: false }}
             />
           </Grid>
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['PPV'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'Positive predictive value (PPV)' }}
+              layout={{ width: 1160, height: 400, title: 'Positive predictive value : (TP / (TP + FP))' }}
               config={{ displayModeBar: false }}
             />
           </Grid>
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['NPV'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'Negative predictive value (NPV)' }}
+              layout={{ width: 1160, height: 400, title: 'Negative predictive value : (TN / (TN + FN))' }}
               config={{ displayModeBar: false }}
             />
           </Grid>
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['TPR'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'true positive rate (TPR)' }}
+              layout={{ width: 1160, height: 400, title: 'True positive rate : (TP / P)' }}
               config={{ displayModeBar: false }}
             />
           </Grid>
           <Grid item>
             <Plot
               data={[{ x: categories, y: chartData['TNR'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'true negative rate (TNR)' }}
+              layout={{ width: 1160, height: 400, title: 'True negative rate : (TN / N)' }}
               config={{ displayModeBar: false }}
             />
           </Grid>
@@ -102,13 +104,6 @@ const ModelPerformance = () => {
             <Plot
               data={[{ x: categories, y: chartData['P'], type: 'bar', }]}
               layout={{ width: 1160, height: 400, title: 'positive samples' }}
-              config={{ displayModeBar: false }}
-            />
-          </Grid>
-          <Grid item>
-            <Plot
-              data={[{ x: categories, y: chartData['N'], type: 'bar', }]}
-              layout={{ width: 1160, height: 400, title: 'negative samples' }}
               config={{ displayModeBar: false }}
             />
           </Grid>

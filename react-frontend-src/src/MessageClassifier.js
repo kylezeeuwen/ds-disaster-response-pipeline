@@ -1,5 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState, useCallback } from 'react';
-import ModelContext from './context/ModelContext'
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -18,8 +17,6 @@ const MessageClassifier = () => {
     setClassifiedMessages(classifiedMessages.concat(classifiedMessage))
   }, [classifiedMessages, setClassifiedMessages])
 
-  const modelContext = useContext(ModelContext)
-
   const [message, setMessage] = useState('')
 
   const onMessageChange = useCallback(event => {
@@ -33,7 +30,7 @@ const MessageClassifier = () => {
       try {
         const response = await fetch(url, {
           method: 'POST',
-          body: JSON.stringify({ message, model: modelContext.modelName }),
+          body: JSON.stringify({ message }),
           headers: { 'Content-Type': 'application/json' }
         })
         const { message: classifiedMessage, classifications: classificationResults } = await response.json()
