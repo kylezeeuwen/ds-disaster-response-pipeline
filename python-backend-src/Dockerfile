@@ -35,8 +35,6 @@ RUN python -m nltk.downloader omw-1.4
 
 COPY . /usr/app/
 
-# TODO this should be done in a seperate container
-
 # Set docker basics
 WORKDIR /usr/app/
 ENTRYPOINT ["python", "-u"]

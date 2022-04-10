@@ -8,8 +8,6 @@ import time
 # + keeps function argument length lower 🤘
 # - This would cause code scaling and testing issues.
 
-# TODO fail when required params not specified
-
 DEFAULT_MODEL_NAME = 'DEFAULT_MODEL'
 DEFAULT_MODEL_TEST_PROPORTION = 0.2
 DEFAULT_MODEL_VERBOSITY = 4

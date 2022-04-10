@@ -25,10 +25,8 @@ def train_classifier():
 
     print(f"Loading data...")
     X, Y, category_names = load_data()
-    # TODO test_size from config
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=MODEL_TEST_PROPORTION)
 
-    # TODO where from ?
     parameters = {
         # APR 6 set - quicker run, comparable performance
         # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
@@ -107,7 +105,6 @@ def load_data():
       * split the corpus into X and Y for ML training
     '''
 
-    # TODO howto cleanly teardown connection on exit
     engine = get_engine()
     df = pd.read_sql("SELECT * FROM training_messages", engine)
     df = df.sample(frac=SAMPLE_RATE)
