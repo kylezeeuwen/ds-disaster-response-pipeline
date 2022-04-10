@@ -70,12 +70,14 @@ TODO The xxx file contains a manifest of files that also includes notes for revi
 
 ### Run the react app in dev mode with live reload
 
+Prerequisites: `nodejs 14 or greater`
+
 Two steps performed on two terminals:
 
 * `./run.sh view SOME_EXISTING_MODEL`: this gives you a running MySQL instance and a flask app running on port 5000 answering HTTP requests
-* `cd react-frontend-src; npm start`: this runs the create-react-app dev tooling in live reload mode. Important: view the dev react on port localhost:3000, not port localhost:5000  
+* `cd react-frontend-src; npm install; npm start`: this runs the create-react-app dev tooling in live reload mode. Important: view the dev react on port localhost:3000, not port localhost:5000  
 
-## Run a python script locally, not via docker
+### Run a python script locally, not via docker
 
 In many cases during development it is preferable to run the python directly instead of inside a docker container. For example:
 
@@ -92,8 +94,17 @@ In any case all you need to do three things after first changing directory into 
 Full example for `train_classifier` with all required ENV as at time of writing this README:
 
 ```
-MODEL_NAME=CHANGE_MODEL_NAME SAMPLE_RATE=1 MYSQL_DATABASE=disaster_response MYSQL_USER=disaster_response MYSQL_PASSWORD=disaster_response MYSQL_HOST=mysql CSV_DIR=../docker-data/csv MODEL_DIRPATH=../docker-data/models python3 main.py train_classifier
+MODEL_NAME=CHANGE_MODEL_NAME SAMPLE_RATE=1 MYSQL_DATABASE=disaster_response MYSQL_USER=disaster_response MYSQL_PASSWORD=disaster_response MYSQL_HOST=localhost CSV_DIR=../docker-data/csv MODEL_DIRPATH=../docker-data/models python3 main.py train_classifier
 ```
+
+### View flask_app logs
+
+The `flask_app` is started using docker-compose in daemon mode (`-d`) so the logs are not printed to standard output. To see the server logs run either of these commands:
+
+* `docker logs flask_app` : this will print all the logs and exit
+* `docker logs -f flask_app` : this will print all the logs and continue printing logs as they are written
+
+Note that if you want to see output it is best to call `print(FOO, flush=True)` in python to ensure logs are immediately flushed.
 
 ## Licencing
 
