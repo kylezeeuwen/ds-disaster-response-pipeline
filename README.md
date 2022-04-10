@@ -12,9 +12,10 @@ The author is a noob data scientist completing the [Udacity Data Science Nano de
 
 Several assets were produced and made available in this repo:
 
-* Data ETL Pipeline for format the training data for classifier generation
-* Model building script to produce a trained ML classifier
-* Dashboard for interacting with classifier and understanding the data
+* Data ETL Pipeline to format the training data for consumption by a ML classifier training pipeline : [process_data.py](./python-backend-src/tasks/process_data.py)
+* Model building script to produce a trained ML classifier : [train_classifier.py](./python-backend-src/tasks/train_classifier.py)
+* Webapp backend that serves data to the frontend : [flask_app.py](./python-backend-src/tasks/flask_app.py)
+* Dashboard for interacting with classifier and understanding the data : [App.js](./react-frontend-src/src/App.js)
 
 ## Installation Notes
 
@@ -36,7 +37,7 @@ The command sequence above performs the following steps:
   * starts a MySQL instance in a docker container 
   * runs [process_data.py](./python-backend-src/tasks/process_data.py) : loads CSV files, transforms, and saves them to the local MySQL instance
   * runs [train_classifier.py](./python-backend-src/tasks/train_classifier.py) : builds a model, saves the model to the local filesystem and saves performance metrics to the local MySQL instance
-  * builds the [react app](./react-frontend-src)
+  * builds the [react app](./react-frontend-src/src/App.js)
   * runs [flask_app.py](./python-backend-src/tasks/flask_app.py) : starts a local web server that can serve the react app, provide model metric, and classify messages
 
 Once this is complete, you can view the web app at https://localhost:5000

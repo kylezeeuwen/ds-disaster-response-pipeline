@@ -3,14 +3,10 @@ from flask_cors import CORS
 
 import pandas as pd
 
-# TODO this should be abstracted
-from sqlalchemy import text
-
 from config.env import MODEL_NAME
-from lib.database import get_engine
+from lib.database import get_engine, run_query
 from lib.model_repository import load_model
 
-# TODO to app init
 (model, metadata) = load_model()  # NB model name specified in ENV
 
 engine = get_engine()
@@ -85,14 +81,9 @@ def get_model_performance():
     Return metrics about the currently loaded model
     '''
 
-    with engine.begin() as conn:
-        # TODO this method for determining the results of the latest model is hacky
-        # TODO we are leaking DB impl this should be abstracted by lib/database
-        qry = text(
-            f"SELECT * FROM model_metrics where model = (SELECT MAX(model) FROM model_metrics WHERE model like '{MODEL_NAME}-%')")
-        resultset = conn.execute(qry)
-        metrics = [x._asdict() for x in resultset]
-        return {'metrics': metrics }
+    # TODO this method for determining the results of the latest model is hacky
+    metrics = run_query(f"SELECT * FROM model_metrics where model = (SELECT MAX(model) FROM model_metrics WHERE model like '{MODEL_NAME}-%')")
+    return {'metrics': metrics }
 
 # NB TODO there is no guarantee the model or the all_categories is loaded
 

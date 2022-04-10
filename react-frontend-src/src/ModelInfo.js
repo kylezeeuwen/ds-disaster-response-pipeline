@@ -67,9 +67,6 @@ const transformMetadata = metaDataInput => {
       if (field === 'CHOSEN_PARAMETERS') {
         return { field: 'CHOSEN_PARAMETERS', value: JSON.stringify(value, {}, 2) }
       }
-      if (field === 'PARAMETER_CANDIDATES') {
-        return { field: 'PARAMETER_CANDIDATES', value: JSON.stringify(value, {}, 2) }
-      }
       if (field === 'MODEL_TIMESTAMP') {
         return { field: 'MODEL_TIMESTAMP', value: (new Date(value * 1000)).toISOString() }
       }

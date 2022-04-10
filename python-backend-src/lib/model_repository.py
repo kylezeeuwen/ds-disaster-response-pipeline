@@ -9,10 +9,9 @@ from config.env import MODEL_DIRPATH, MODEL_NAME, MODEL_TIMESTAMP, SAMPLE_RATE
 
 def save_model(
     model,
-    metrics=[]
+    metrics=[],
     train_set_size=None,
     test_set_size=None,
-    parameter_candidates={},
     chosen_parameters={},
 ):
     '''
@@ -26,7 +25,6 @@ def save_model(
       * value - float - the value of the metric
     train_set_size - int - number of samples in the training set
     test_set_size - int - number of samples in the test set
-    parameter_candidates - dict - the parameter set passed to Gridsearch to evaluate
     chosen_parameters - dict - the parameter combo that GridSearch selected as the best parameters
 
     OUTPUT:
@@ -42,7 +40,6 @@ def save_model(
     metadata['SAMPLE_RATE'] = SAMPLE_RATE
     metadata['MODEL_NAME'] = MODEL_NAME
     metadata['MODEL_TIMESTAMP'] = MODEL_TIMESTAMP
-    metadata['PARAMETER_CANDIDATES'] = parameter_candidates
     metadata['CHOSEN_PARAMETERS'] = chosen_parameters
     metadata['TRAIN_SET_SIZE'] = train_set_size
     metadata['TEST_SET_SIZE'] = test_set_size

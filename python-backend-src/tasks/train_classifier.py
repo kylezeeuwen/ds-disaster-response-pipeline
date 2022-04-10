@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from config.env import SAMPLE_RATE, MODEL_NAME, MODEL_TIMESTAMP, MODEL_VERBOSITY, MODEL_PARALLELISM, MODEL_TEST_PROPORTION
+from config.env import SAMPLE_RATE, MODEL_NAME, PARAMETER_SET, MODEL_TIMESTAMP, MODEL_VERBOSITY, MODEL_PARALLELISM, MODEL_TEST_PROPORTION
 
 from lib.database import get_engine
 from lib.model_factory import get_model
@@ -28,44 +28,8 @@ def train_classifier():
     X, Y, category_names = load_data()
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=MODEL_TEST_PROPORTION)
 
-    parameters = {
-        # APR 6 set - quicker run, comparable performance
-        # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2)),
-        # 'features__text_pipeline__vect__max_df': (0.5, 1.0),
-        # 'features__text_pipeline__vect__max_features': (10, 100, 500, 1000),
-
-        # APR 7 set - ran near 24 hours
-        # 'features__text_pipeline__vect__ngram_range': ((1, 1), (1, 2), (1, 3)),
-        # 'features__text_pipeline__vect__min_df': (0.0001, 0.001, 0.01),
-        # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 0.9, 1.0),
-        # 'features__text_pipeline__vect__max_features': (100, 1000, 5000, None),
-        # 'features__text_pipeline__tfidf__use_idf': (True, False),
-
-        # TEST set - quick just prove the pipeline not broke
-        'features__text_pipeline__vect__ngram_range': ((1, 2), ),
-        'features__text_pipeline__vect__min_df': (0.00001, ),
-        'features__text_pipeline__vect__max_df': (0.5, ),
-        'features__text_pipeline__vect__max_features': (5000, ),
-        'features__text_pipeline__tfidf__use_idf': (True, ),
-
-
-        # DISABLE FOR PERF REASONS
-        # 'features__text_pipeline__vect__max_df': (0.5, 0.75, 1.0),
-        # 'features__text_pipeline__vect__max_features': (None, 5000, 10000),
-        # 'features__text_pipeline__tfidf__use_idf': (True, False),
-
-        # NOT WORKING
-        # 'clf__n_estimators': [50, 100, 200],
-        # 'clf__min_samples_split': [2, 3, 4],
-        # 'features__transformer_weights': (
-        #     {'text_pipeline': 1, 'starting_verb': 0.5},
-        #     {'text_pipeline': 0.5, 'starting_verb': 1},
-        #     {'text_pipeline': 0.8, 'starting_verb': 1},
-        # )
-    }
-
     print('Building model...')
-    model = get_model(parameters, MODEL_VERBOSITY, MODEL_PARALLELISM)
+    model = get_model(PARAMETER_SET, MODEL_VERBOSITY, MODEL_PARALLELISM)
 
     print('Training model...')
     model.fit(X_train, Y_train)
@@ -79,7 +43,6 @@ def train_classifier():
         model,
         train_set_size=len(X_train),
         test_set_size=len(X_train),
-        parameter_candidates=parameters,
         chosen_parameters=model.best_params_,
         metrics=metrics
     )

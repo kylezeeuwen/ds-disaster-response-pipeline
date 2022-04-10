@@ -43,6 +43,8 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_HOST
       - MODEL_NAME
+      - PARAMETER_SET
+      - SAMPLE_RATE
     profiles:
       - train_classifier
     depends_on:

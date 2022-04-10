@@ -5,7 +5,7 @@
 # * Build environment variable strings
 # * start services and execute tasks
 
-USAGE="Usage: ./run.sh (generate|view) MODEL_NAME [SAMPLE_RATE]"
+USAGE="Usage: ./run.sh (generate|view) MODEL_NAME [PARAMETER_SET] [SAMPLE_RATE]"
 
 ######
 # Get parameters from command line
@@ -33,10 +33,17 @@ echo "run.sh: MODE is $1"
 MODEL_NAME=$2
 echo "run.sh: MODEL_NAME is $MODEL_NAME"
 
-SAMPLE_RATE=1
-if [ $# -eq 3 ]
+PARAMETER_SET='KNOWN_GOOD' # see ./python-backend-src/lib/model_factory.py for options
+if [ $# -ge 3 ]
   then
-    SAMPLE_RATE=$3
+    PARAMETER_SET=$3
+fi
+echo "run.sh: PARAMETER_SET is PARAMETER_SET"
+
+SAMPLE_RATE=1
+if [ $# -ge 4 ]
+  then
+    SAMPLE_RATE=$4
 fi
 echo "run.sh: SAMPLE_RATE is $SAMPLE_RATE"
 
@@ -52,7 +59,7 @@ MYSQL_HOST='mysql'
 # NB `docker-compose run` and `docker-compose up` use different signatures to pass env so we have to generate two strings
 # NB adding new ENV VARS: env vars specified here will pass direct to containers via `docker-compose run`, but for `docker-compose up` you must also add the env var to the service environment array in the docker-compose.yml file
 
-DOCKER_COMPOSE_ENV_STRING="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD MYSQL_DATABASE=$MYSQL_DATABASE MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD MYSQL_HOST=$MYSQL_HOST"
+DOCKER_COMPOSE_ENV_STRING="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME PARAMETER_SET=$PARAMETER_SET MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD MYSQL_DATABASE=$MYSQL_DATABASE MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD MYSQL_HOST=$MYSQL_HOST"
 DOCKER_RUN_APP_ENV_STRING=""
 for env_var in $DOCKER_COMPOSE_ENV_STRING
 do
