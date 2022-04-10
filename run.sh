@@ -1,6 +1,14 @@
 #!/bin/bash
 
+# this script does the following:
+# * Get parameters from command line
+# * Build environment variable strings
+# * start services and execute tasks
+
 USAGE="Usage: ./run.sh (generate|view) MODEL_NAME [SAMPLE_RATE]"
+
+######
+# Get parameters from command line
 
 if [ $# -lt 2 ]
   then
@@ -20,17 +28,20 @@ else
     echo $USAGE 1>&2
     exit 1
 fi
-echo "MODE is $1"
+echo "run.sh: MODE is $1"
 
 MODEL_NAME=$2
-echo "MODEL_NAME is $MODEL_NAME"
+echo "run.sh: MODEL_NAME is $MODEL_NAME"
 
 SAMPLE_RATE=1
 if [ $# -eq 3 ]
   then
     SAMPLE_RATE=$3
 fi
-echo "SAMPLE_RATE is $SAMPLE_RATE"
+echo "run.sh: SAMPLE_RATE is $SAMPLE_RATE"
+
+######
+# Build environment variable strings
 
 MYSQL_ROOT_PASSWORD='not_secure1'
 MYSQL_DATABASE='disaster_response'
@@ -38,33 +49,46 @@ MYSQL_USER='disaster_response'
 MYSQL_PASSWORD='disaster_response'
 MYSQL_HOST='mysql'
 
-# NB `docker-compose run` and `docker-compose up` use different signatures to pass env vars so currently i have to generate two strings
+# NB `docker-compose run` and `docker-compose up` use different signatures to pass env so we have to generate two strings
 # NB adding new ENV VARS: env vars specified here will pass direct to containers via `docker-compose run`, but for `docker-compose up` you must also add the env var to the service environment array in the docker-compose.yml file
-# TODO consolidate these string generators to avoid duplication and future copy/paste errors
-DOCKER_RUN_APP_ENV="-e MODEL_NAME=$MODEL_NAME -e SAMPLE_RATE=$SAMPLE_RATE -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=$MYSQL_DATABASE -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_HOST=$MYSQL_HOST"
-DOCKER_COMPOSE_ENV_PREPEND="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD MYSQL_DATABASE=$MYSQL_DATABASE MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD MYSQL_HOST=$MYSQL_HOST"
 
-# TODO must merge docker and docker-compose setups can have both
+DOCKER_COMPOSE_ENV_STRING="SAMPLE_RATE=$SAMPLE_RATE MODEL_NAME=$MODEL_NAME MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD MYSQL_DATABASE=$MYSQL_DATABASE MYSQL_USER=$MYSQL_USER MYSQL_PASSWORD=$MYSQL_PASSWORD MYSQL_HOST=$MYSQL_HOST"
+DOCKER_RUN_APP_ENV_STRING=""
+for env_var in $DOCKER_COMPOSE_ENV_STRING
+do
+  DOCKER_RUN_APP_ENV_STRING+="-e $env_var "
+done
 
-set -x
+######
+# start services and execute tasks
 
-docker-compose up -d mysql 1>/dev/null 2>/dev/null
+command="$DOCKER_COMPOSE_ENV_STRING docker-compose up -d mysql"
+eval $command
+
 
 if [ $GENERATE -eq 1 ]
   then
-    docker-compose build process_data # 1>/dev/null 2>/dev/null
-    docker-compose run $DOCKER_RUN_APP_ENV process_data
-    docker-compose build train_classifier # 1>/dev/null 2>/dev/null
-    docker-compose run $DOCKER_RUN_APP_ENV train_classifier
+    echo "run.sh: building process_data container"
+    docker-compose build process_data 1>/dev/null 2>/dev/null
+    echo "run.sh: running process_data task"
+    docker-compose run $DOCKER_RUN_APP_ENV_STRING process_data
+    echo "run.sh: building train_classifier container"
+    docker-compose build train_classifier 1>/dev/null 2>/dev/null
+    echo "run.sh: running train_classifier task"
+    docker-compose run $DOCKER_RUN_APP_ENV_STRING train_classifier
 fi
 
 if [ $VIEW -eq 1 ]
   then
-    docker-compose build build_react # 1>/dev/null 2>/dev/null
-    docker-compose run build_react
+    echo "run.sh: building build_react container"
+    docker-compose build build_react 1>/dev/null 2>/dev/null
+    echo "run.sh: running build_react task"
+    docker-compose run build_react 1>/dev/null 2>/dev/null
 
+    echo "run.sh: building flask_app container"
     docker-compose build flask_app
-    command="$DOCKER_COMPOSE_ENV_PREPEND docker-compose --profile flask_app up -d"
+    echo "run.sh: running flask_app task"
+    command="$DOCKER_COMPOSE_ENV_STRING docker-compose --profile flask_app up -d"
     eval $command
 fi
 
