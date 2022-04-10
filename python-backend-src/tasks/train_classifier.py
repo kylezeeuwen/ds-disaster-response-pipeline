@@ -6,6 +6,7 @@ from config.env import SAMPLE_RATE, MODEL_NAME, MODEL_TIMESTAMP, MODEL_VERBOSITY
 from lib.database import get_engine
 from lib.model_factory import get_model
 from lib.model_repository import save_model
+from lib.evaluate_model import evaluate_single_classifier
 
 def train_classifier():
     '''
@@ -41,10 +42,10 @@ def train_classifier():
         # 'features__text_pipeline__tfidf__use_idf': (True, False),
 
         # TEST set - quick just prove the pipeline not broke
-        'features__text_pipeline__vect__ngram_range': ((1, 1), ),
+        'features__text_pipeline__vect__ngram_range': ((1, 2), ),
         'features__text_pipeline__vect__min_df': (0.00001, ),
-        'features__text_pipeline__vect__max_df': (0.75, ),
-        'features__text_pipeline__vect__max_features': (100, ),
+        'features__text_pipeline__vect__max_df': (0.5, ),
+        'features__text_pipeline__vect__max_features': (5000, ),
         'features__text_pipeline__tfidf__use_idf': (True, ),
 
 
@@ -70,22 +71,18 @@ def train_classifier():
     model.fit(X_train, Y_train)
     print("\nBest Parameters:", model.best_params_)
 
-    # only save clf.best_estimator_ to save on pickle size
-    #  https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html
-    # explore scoring, multioutput classifiers, best_score_ and best_index_
-
     print('Evaluating model...')
     metrics = evaluate_model(model, X_test, Y_test, category_names)
-    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL',
-                   'metric': 'train_set_size', 'value': len(X_train)})
-    metrics.append({'model': f"{MODEL_NAME}-{MODEL_TIMESTAMP}", 'category': 'ALL',
-                   'metric': 'test_set_size', 'value': len(X_test)})
 
     print('Saving model...')
-    save_model(model, metrics, {
-        'parameter_candidates': parameters,
-        'parameters': model.best_params_,
-    })  # NB model name specified in ENV
+    save_model(
+        model,
+        train_set_size=len(X_train),
+        test_set_size=len(X_train),
+        parameter_candidates=parameters,
+        chosen_parameters=model.best_params_,
+        metrics=metrics
+    )
 
     print('Trained model saved!')
 
@@ -154,78 +151,3 @@ def evaluate_model(model, X_test, Y_test, category_names):
             })
 
     return metrics
-
-
-def divide_or_zero(numerator, denominator):
-    '''
-    INPUT:
-    numerator - numeric
-    denominator - numeric
-
-    OUTPUT:
-    numeric
-
-    Divide numerator by denominotor, unless denominator is 0 then just return 0
-    '''
-    return numerator / denominator if denominator != 0 else 0
-
-def evaluate_single_classifier(y_actual, y_predictions):
-    '''
-    INPUT:
-    y_actual - array - actual results
-    y_predictions - array - predictions
-
-    OUTPUT:
-    metrics - a series of performance metrics
-    '''
-
-    TP = 0
-    FP = 0
-    TN = 0
-    FN = 0
-    P = 0
-    N = 0
-
-    for i in range(len(y_predictions)):
-        if y_actual[i] == 1:
-            P += 1
-        if y_actual[i] == 0:
-            N += 1
-        if y_actual[i] == y_predictions[i] == 1:
-            TP += 1
-        if y_predictions[i] == 1 and y_actual[i] != y_predictions[i]:
-            FP += 1
-        if y_actual[i] == y_predictions[i] == 0:
-            TN += 1
-        if y_predictions[i] == 0 and y_actual[i] != y_predictions[i]:
-            FN += 1
-
-    # source: https://en.wikipedia.org/wiki/Sensitivity_and_specificity
-    # sensitivity, recall, hit rate, or true positive rate (TPR)
-    TPR = divide_or_zero(TP, P)
-
-    # specificity, selectivity or true negative rate (TNR)
-    TNR = divide_or_zero(TN, N)
-
-    # precision or positive predictive value (PPV)
-    PPV = divide_or_zero(TP, (TP + FP))
-
-    # ____ or negative predictive value (PPV)
-    NPV = divide_or_zero(TN, (TN + FN))
-
-    # accuracy
-    ACC = divide_or_zero((TP + TN), (P + N))
-
-    return {
-        "P": P,
-        "N": N,
-        "TP": TP,
-        "FP": FP,
-        "TN": TN,
-        "FN": FN,
-        "TPR": TPR,
-        "TNR": TNR,
-        "PPV": PPV,
-        "NPV": NPV,
-        "ACC": ACC,
-    }

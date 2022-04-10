@@ -31,7 +31,7 @@ def flask_app():
 
     Entry point called from main.py. Start the app listening on port 5000 for incoming requests
     '''
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
 
 @app.route('/')
 def root():
