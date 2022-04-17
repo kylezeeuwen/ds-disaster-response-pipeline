@@ -26,7 +26,7 @@ def train_classifier():
 
     print(f"Loading data...")
     X, Y, category_names = load_data()
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=MODEL_TEST_PROPORTION)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=MODEL_TEST_PROPORTION, random_state = 42)
 
     print('Building model...')
     model = get_model(PARAMETER_SET, MODEL_VERBOSITY, MODEL_PARALLELISM)
