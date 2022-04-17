@@ -116,6 +116,11 @@ Note that if you want to see output it is best to call `print(FOO, flush=True)` 
   * CLASSIFIER: evaluate alternatives to demonstrate an "OR" in pipeline ?    
   * PRESENTATION: allow selection of specific categories in the UI
   * PRESENTATION: get samples of messages based on classification
+  * EVALUATION: more evaluation metrics : precision score, f1 score, recall, and support scores.
+    * compare accuracy between training and testing, it should be comparable otherwise there is overfitting
+  * CLASSIFIER: evaluate solutions for comparing multiple classifiers via a pipeline, sounds like it is not suported out ogf box but there are some standard solutions
+    * https://stackoverflow.com/questions/51629153/more-than-one-estimator-in-gridsearchcvsklearn/51629917#51629917
+    * https://stackoverflow.com/questions/23045318/grid-search-over-multiple-classifiers
 
 ### Metabase Notes 
 
