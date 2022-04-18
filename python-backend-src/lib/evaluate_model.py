@@ -71,3 +71,26 @@ def divide_or_zero(numerator, denominator):
     Divide numerator by denominotor, unless denominator is 0 then just return 0
     '''
     return numerator / denominator if denominator != 0 else 0
+
+def custom_f1_scorer_with_recall_favored(y, y_pred, **kwargs):
+    beta=3
+    category_names = y.columns
+
+    f1 = []
+    for idx, category in enumerate(category_names):
+        y_actual_single_classification = y[category].tolist()
+        y_pred_single_classification = y_pred[:, idx]
+        single_classifier_metrics = evaluate_single_classifier(
+            y_actual_single_classification,
+            y_pred_single_classification
+        )
+
+        precision = single_classifier_metrics['PPV']
+        recall = single_classifier_metrics['TPR']
+
+        f1.append(divide_or_zero(
+            (1 + beta*beta) * (precision*recall),
+            ((beta*beta*precision) + recall))
+        )
+    print(f1)
+    return sum(f1) / len(category_names)

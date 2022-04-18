@@ -77,7 +77,6 @@ command="$DOCKER_COMPOSE_ENV_STRING docker-compose up -d mysql"
 eval $command
 sleep 2 # wait for MySQL to start
 
-
 if [ $GENERATE -eq 1 ]
   then
     echo "run.sh: building process_data container"
